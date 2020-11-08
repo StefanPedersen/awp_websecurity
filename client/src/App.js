@@ -55,7 +55,7 @@ function App() {
           <h2>Ask a Question</h2>
           <input onChange={(event) => setTitle(event.target.value)} name="title" type="text"  /><br />  <br />  
           <input onChange={(event) => setDescription(event.target.value)} name="description" type="text"  /><br />  <br />  
-          <button type="button" onClick={(event) => addQuestion()}>Submit Question</button>
+          <button type="button">Submit Question</button>
        </div>
       
     </>
