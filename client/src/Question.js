@@ -33,10 +33,14 @@ function Question(props) {
   useEffect(() => {
     const fetchData = async () => {
       const answerurl = `${API_URL}/answers`;
-      const answerresponse = await fetch(answerurl, {mode:'cors'});
-      const answerdata = await answerresponse.json();
-      setAnswer(answerdata);
-      
+        try{
+        const answerresponse = await fetch(answerurl, {mode:'cors'});
+        const answerdata = await answerresponse.json();
+        setAnswer(answerdata);
+      } catch(error){
+        console.error("Getting Data from Question", error.message);
+        return{};
+      }
     }
     fetchData()    
   }, []);
@@ -58,9 +62,15 @@ function Question(props) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(upVote)
     };
+
+    try{
     const answerresponse = await fetch(answerurl, requestOption);
     const answerdata = await answerresponse.json();
     console.log(answerdata);
+    } catch(error){
+      console.error("UpVoting", error.message);
+        return{};
+    }
   }
 
   async function downVoteScore(id, score){
@@ -78,9 +88,14 @@ function Question(props) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(downVote)
     };
+    try{
     const answerresponse = await fetch(answerurl, requestOption);
     const answerdata = await answerresponse.json();
     console.log(answerdata);
+    }catch(error){
+      console.error("DownVoting", error.message);
+        return{};
+    }
   }
 
     async function addAnswer(){
@@ -95,9 +110,14 @@ function Question(props) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newAnswer)
         };
+        try{
         const answerresponse = await fetch(answerurl, requestOption);
         const answerdata = await answerresponse.json();
         console.log(answerdata);
+        } catch(error){
+          console.error("Adding answer", error.message);
+          return{};
+        }
       }
 
     return(
