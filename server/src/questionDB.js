@@ -26,22 +26,13 @@ module.exports = (mongoose) => {
 
     async function createQuestion(title, text){
         let question = new questionModel({heading: title, description: text});
-        return question.save();
-    }
-
-    async function bootstrap(count = 10) {
-       let l = (await getQuestions()).length;
-       console.log("Question collection size:", l);
-    
-        if (l === 0) {
-          let promises = [];
-          for (let i = 0; i < count; i++) {
-            let testQuestion = new questionModel({heading: `Question number ${i}`});
-            promises.push(testQuestion.save());
-          }
-          return Promise.all(promises);
+        try{
+            return question.save();
+        } catch(error){
+            console.error("createQuestion", error.message);
+            return{};
         }
-      }
+    }
 
       const answerSchema = new mongoose.Schema({
         questionId:String,
@@ -71,7 +62,13 @@ module.exports = (mongoose) => {
 
     async function createAnswer(question, text){
         let answer = new answerModel({questionId:question, answer: text, score: 0});
-        return answer.save();
+        try{
+            return answer.save();
+        } catch(error){
+            console.error("createAnswer", error.message);
+            return{};
+        }
+        
     }
 
     async function updateScore(id, score){
