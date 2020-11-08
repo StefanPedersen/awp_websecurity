@@ -12,6 +12,7 @@ function App() {
   useEffect(() => {
     async function getData() {
       const url = `${API_URL}/questions`;
+      try{
       const response = await fetch(url);
       const data = await response.json();
       setData(data);
@@ -20,6 +21,10 @@ function App() {
       const answerresponse = await fetch(answerurl);
       const answerdata = await answerresponse.json();
       setAnswerData(answerdata);
+    } catch(error){
+      console.error("Getting Data", error.message);
+      return{};
+      }
 
     }
     getData();
@@ -30,7 +35,26 @@ function App() {
   const [thisDescription, setDescription] = useState("");
 
 
-  
+  async function addQuestion(){
+      const newQuestion = {
+        title: thisTitle,
+        text: thisDescription
+      };
+      const url = `${API_URL}/questions`;
+      const requestOption = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newQuestion)
+      };
+      try{
+      const response = await fetch(url, requestOption);
+      const data = await response.json();
+      console.log(data);
+      } catch(error){
+        console.error("Adding Question", error.message);
+            return{};
+      }
+    }
 
   function getQuestion(id){
     const question = data.find(element => element._id ===id);
@@ -55,7 +79,7 @@ function App() {
           <h2>Ask a Question</h2>
           <input onChange={(event) => setTitle(event.target.value)} name="title" type="text"  /><br />  <br />  
           <input onChange={(event) => setDescription(event.target.value)} name="description" type="text"  /><br />  <br />  
-          <button type="button">Submit Question</button>
+          <button type="button" onClick={(event) => addQuestion()}>Submit Question</button>
        </div>
       
     </>
