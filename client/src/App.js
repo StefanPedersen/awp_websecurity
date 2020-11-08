@@ -30,21 +30,7 @@ function App() {
   const [thisDescription, setDescription] = useState("");
 
 
-  async function addQuestion(){
-      const newQuestion = {
-        title: thisTitle,
-        text: thisDescription
-      };
-      const url = `${API_URL}/questions`;
-      const requestOption = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newQuestion)
-      };
-      const response = await fetch(url, requestOption);
-      const data = await response.json();
-      console.log(data);
-    }
+  
 
   function getQuestion(id){
     const question = data.find(element => element._id ===id);
