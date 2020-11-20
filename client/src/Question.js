@@ -5,14 +5,15 @@ function Question(props) {
     const id = props.id
     const question = props.getQuestion(props.id);
     let filter = props.filter;
-    //let filterHead =""; 
 
+    const [postCount, setPostCount] = useState(0);
+    //let filterHead =""; 
     let answers = props.answers.filter(answer => answer.questionId === props.id);
     if(filter){
         answers = props.answers.filter(answer => answer.questionId.includes(filter));
     }   
     let listOfAnswers = answers.map(element =>
-    <div class="score"><div key={element._id}>
+      <div class="score"><div key={element._id}>
       <span>
         <button type="button" onClick={(event) => {
         upVoteScore(element._id, element.score); 
@@ -28,8 +29,8 @@ function Question(props) {
     )
     
     //AddAnswer
-    const API_URL = process.env.REACT_APP_API;  
-
+  const API_URL = process.env.REACT_APP_API;  
+  
   useEffect(() => {
     const fetchData = async () => {
       const answerurl = `${API_URL}/answers`;
@@ -37,13 +38,16 @@ function Question(props) {
         const answerresponse = await fetch(answerurl, {mode:'cors'});
         const answerdata = await answerresponse.json();
         setAnswer(answerdata);
+        setPostCount(postCount + 1);
+        console.log("Get answer data");
       } catch(error){
-        console.error("Getting Data from Question", error.message);
+        console.error("Getting Data from Question, trying to get answers", error.message);
         return{};
       }
     }
     fetchData()    
   }, []);
+    
 
   const [input, setAnswer] = useState("");
 
@@ -113,27 +117,37 @@ function Question(props) {
         try{
         const answerresponse = await fetch(answerurl, requestOption);
         const answerdata = await answerresponse.json();
+       
         console.log(answerdata);
+        setPostCount(postCount + 1);
+        window.location.reload(true);
+
         } catch(error){
           console.error("Adding answer", error.message);
           return{};
         }
       }
-
+    
+    let content ='No questions'
+    if(question){
+    content =  <div id="content"><h1>{question.heading}</h1>
+    <p>{question.description}</p>
+    <p>Answers:</p>
+    {listOfAnswers}
+    <br></br>
+    <h2>Add answer</h2>
+    <input onChange={(event) => setAnswer(event.target.value)} name="answer" type="text"  /><br />  <br />  
+    <button type="button" onClick={(event) => addAnswer()}>Submit Answer</button>
+    <br></br><br></br>
+    <Link to="/">Go Back</Link></div>
+    }
     return(
-        
         <>
-            <h1>{question.heading}</h1>
-            <p>Answers:</p>
-            {listOfAnswers}
-            <br></br>
-            <h2>Add answer</h2>
-            <input onChange={(event) => setAnswer(event.target.value)} name="answer" type="text"  /><br />  <br />  
-            <button type="button" onClick={(event) => addAnswer()}>Submit Answer</button>
-            <br></br><br></br>
-            <Link to="/">Go Back</Link>
+        {content}
         </>
     );
-}
+  }
+
+
 
 export default Question;
