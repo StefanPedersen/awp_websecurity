@@ -3,11 +3,13 @@ import { Router } from "@reach/router";
 
 import Questions from './Questions';
 import Question from './Question';
+
 const API_URL = process.env.REACT_APP_API;
 
 function App() {
   const [data, setData] = useState([]);
   const [answerdata, setAnswerData] = useState([]);
+  const [postCount, setPostCount] = useState(0);
   
   useEffect(() => {
     async function getData() {
@@ -16,20 +18,20 @@ function App() {
       const response = await fetch(url);
       const data = await response.json();
       setData(data);
+     
       //Answer Data
       const answerurl = `${API_URL}/answers`;
       const answerresponse = await fetch(answerurl);
       const answerdata = await answerresponse.json();
       setAnswerData(answerdata);
-    } catch(error){
+    } 
+    catch(error){
       console.error("Getting Data", error.message);
       return{};
       }
-
     }
     getData();
-
-  }, []); 
+  }, [postCount]);
 
   const [thisTitle, setTitle] = useState("");
   const [thisDescription, setDescription] = useState("");
@@ -50,6 +52,7 @@ function App() {
       const response = await fetch(url, requestOption);
       const data = await response.json();
       console.log(data);
+      setPostCount(postCount + 1);
       } catch(error){
         console.error("Adding Question", error.message);
             return{};
@@ -69,11 +72,10 @@ function App() {
 
   return (
     <>
-      
       <h1>Mandatory Assignement - StackOverflow Edition</h1>
       <Router>
         <Questions path="/" questions={data}/> 
-        <Question path="/question/:id" getQuestion={getQuestion} answers={answerdata} getAnswer={getAnswer}/>
+        <Question path="/question/:id" getQuestion={getQuestion} answers={answerdata} getAnswer={getAnswer} />
       </Router>
       <div>
           <h2>Ask a Question</h2>
@@ -84,6 +86,7 @@ function App() {
       
     </>
   );
+
 }
 
 export default App;
